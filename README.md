@@ -2,6 +2,16 @@
 
 A collection of `varde-*` Claude/opencode skills covering the full feature lifecycle: plan, build, review, document, and clean up.
 
+## Related projects
+
+`varde-skills` is the agent-facing layer of a three-part family. The skills work standalone, but light up additional capability when the two sibling CLIs are installed and on `PATH` — each is an **optional tool with graceful fallback** to plain file operations when absent.
+
+| Project | What it is | Link |
+|---|---|---|
+| **varde-skills** | This repo — the `varde-*` skills that drive the plan → build → review → document lifecycle. | [github.com/alecegg/varde-skills](https://github.com/alecegg/varde-skills) |
+| **varde-code** | A native Rust code-intelligence engine (tree-sitter parsing, entity/symbol extraction, SQLite-backed query/scan), exposed as a single `varde-code` CLI. Skills use it for code queries and scans; without it they fall back to grep/glob. | [github.com/alecegg/varde-code](https://github.com/alecegg/varde-code) |
+| **varde-docs** | A standalone Rust CLI for a generic markdown-with-frontmatter knowledge store (ranked search, uniform CRUD, optimistic-concurrency writes, lint). Skills use it for knowledge notes, specs, plans, and docs; without it they fall back to Read/Write/Edit. | [github.com/alecegg/varde-docs](https://github.com/alecegg/varde-docs) |
+
 ## Install
 
 Run the installer and point it at the skills directory for your agent runtime:
