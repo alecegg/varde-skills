@@ -127,6 +127,9 @@ for i in $(seq 0 $((len - 1))); do
 
       # sandbox the run so real repo state is never mutated
       if [ -n "$SANDBOX_DIR" ]; then sbox="$SANDBOX_DIR"; else sbox="$(mktemp -d)"; fi
+      skill_sbox="$sbox/skill"
+      rm -rf "$skill_sbox"
+      cp -R "$SKILL_DIR" "$skill_sbox"
       for f in ${files[@]+"${files[@]}"}; do
         [ -n "$f" ] || continue
         mkdir -p "$sbox/$(dirname "$f")"
@@ -134,7 +137,7 @@ for i in $(seq 0 $((len - 1))); do
       done
 
       if [ "$cfg" = with_skill ]; then
-        full="You have a skill available. First read and follow the instructions in $SKILL_MD_ABS, then handle this request:
+        full="You have a skill available. First read and follow the instructions in $skill_sbox/SKILL.md, then handle this request:
 
 $prompt"
       else

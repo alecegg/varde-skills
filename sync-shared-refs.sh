@@ -42,13 +42,13 @@ emit() {
 sync_plain() {
   local name="$1"; shift
   for skill in "$@"; do
-    cat "$SHARED/$name" | emit "$skill/references/$name"
+    emit "$skill/references/$name" < "$SHARED/$name"
   done
 }
 
 sync_with_append() {
   local name="$1" skill="$2" append="$3"
-  cat "$SHARED/$name" "$SHARED/$append" | emit "$skill/references/$name"
+  emit "$skill/references/$name" < <(cat "$SHARED/$name" "$SHARED/$append")
 }
 
 sync_plain INTERVIEW.md varde-build varde-review-fix
@@ -59,15 +59,13 @@ sync_plain DESIGN-VOCABULARY.md varde-plan
 for pair in "varde-build:build" "varde-docs:docs" "varde-explain:explain" "varde-plan:plan" "varde-review:review" "varde-simplify:simplify" "varde-spec:spec"; do
   skill="${pair%%:*}"
   suffix="${pair##*:}"
-  cat "$SHARED/VARDE-CODE-CLI-CORE.md" "$SHARED/VARDE-CODE-CLI.$suffix.append.md" \
-    | emit "$skill/references/VARDE-CODE-CLI.md"
+  emit "$skill/references/VARDE-CODE-CLI.md" < <(cat "$SHARED/VARDE-CODE-CLI-CORE.md" "$SHARED/VARDE-CODE-CLI.$suffix.append.md")
 done
 
 for pair in "varde-knowledge:knowledge" "varde-plan:plan" "varde-spec:spec" "varde-docs:docs"; do
   skill="${pair%%:*}"
   suffix="${pair##*:}"
-  cat "$SHARED/VARDE-DOCS-CLI-CORE.md" "$SHARED/VARDE-DOCS-CLI.$suffix.append.md" \
-    | emit "$skill/references/VARDE-DOCS-CLI.md"
+  emit "$skill/references/VARDE-DOCS-CLI.md" < <(cat "$SHARED/VARDE-DOCS-CLI-CORE.md" "$SHARED/VARDE-DOCS-CLI.$suffix.append.md")
 done
 
 if [ "$MODE" = check ]; then

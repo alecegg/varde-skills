@@ -26,7 +26,7 @@ Check the task's `kind` field before choosing an execution path:
 
 Immediately after loading a task section, before the Given / Unknowns / Plan / Verification frame:
 
-- Check the task's `modifies` and `creates` fields against the current working tree: `git diff <plan's authoring commit>..HEAD -- <file>` for each `modifies` entry, and check whether each `creates` path already exists unexpectedly.
+- Check the task's `modifies` and `creates` fields against the current working tree: for each `modifies` entry, run `git diff <plan's authoring commit>..HEAD -- <file>`, `git diff -- <file>`, and `git diff --cached -- <file>`; check whether each `creates` path already exists unexpectedly.
 - Treat unexpected changes or file existence (including uncommitted changes) as drift.
 - On drift, give a read-only subagent the task body and the diff.
 - If the subagent finds a real conflict, apply Blocker Handling and stop.

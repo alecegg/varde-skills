@@ -47,14 +47,17 @@ else
   SELECTED=("${ALL_SKILLS[@]}")
 fi
 
+for skill in "${SELECTED[@]}"; do
+  if [[ ! " ${ALL_SKILLS[*]} " =~ " ${skill} " ]]; then
+    echo "Unknown skill: $skill" >&2
+    exit 1
+  fi
+done
+
 mkdir -p "$TARGET"
 
 for skill in "${SELECTED[@]}"; do
   src="$SCRIPT_DIR/$skill"
-  if [ ! -d "$src" ]; then
-    echo "Skipping unknown skill: $skill" >&2
-    continue
-  fi
   dest="$TARGET/$skill"
   if [ -e "$dest" ] && [ "$FORCE" -ne 1 ]; then
     read -r -p "Overwrite existing $dest? [y/N] " reply

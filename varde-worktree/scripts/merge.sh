@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Merge a worktree's branch back into the target branch.
-set -uo pipefail
+set -euo pipefail
 
 usage() {
   cat <<'EOF'
@@ -37,8 +37,11 @@ repo_name="$(basename "$(git rev-parse --show-toplevel)")"
 repo_root="$(git rev-parse --show-toplevel)"
 worktree_path="$(dirname "${repo_root}")/${repo_name}-worktrees/${id}"
 
-if [[ -d "${worktree_path}" ]] && ! git -C "${worktree_path}" diff --quiet HEAD; then
-  git -C "${worktree_path}" commit -am "worktree ${id}: uncommitted changes at merge time" >&2
+git rev-parse --verify --quiet "${branch}^{commit}" >/dev/null || { echo "error: branch ${branch} does not exist" >&2; exit 4; }
+git rev-parse --verify --quiet "${into}^{commit}" >/dev/null || { echo "error: target ${into} does not resolve" >&2; exit 4; }
+if [[ -d "${worktree_path}" ]] && [[ -n "$(git -C "${worktree_path}" status --porcelain)" ]]; then
+  git -C "${worktree_path}" add -A
+  git -C "${worktree_path}" commit -m "worktree ${id}: uncommitted changes at merge time" >&2
 fi
 
 merge_base="$(git merge-base "${into}" "${branch}")"
@@ -51,6 +54,10 @@ if git merge --no-ff --no-edit "${branch}"; then
   echo "merged ${branch} into ${into}"
   exit 0
 else
+  if ! git diff --name-only --diff-filter=U | grep -q .; then
+    echo "error: merge failed without conflicts" >&2
+    exit 4
+  fi
   echo "conflict merging ${branch} into ${into} — see references/RESOLVE.md" >&2
   exit 3
 fi

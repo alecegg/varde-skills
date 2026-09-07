@@ -38,7 +38,7 @@ Report the resolved mode before work starts.
    folder, confirm `review.md` and generated nav-only `index.md` exist, and
    print the selected folder, category list, and finding counts before work
    starts.
-4. **Run the automated fix pass.** Apply findings with git-stash isolation
+4. **Run the automated fix pass.** Apply findings with per-finding diff isolation
    and verification, gated by the `mode=build` escalation check. Full
    procedure: `references/FIX-PASS.md`.
 5. **Run the human triage pass.** Walk whatever remains one at a time and ask
@@ -62,9 +62,8 @@ Report the resolved mode before work starts.
 ## Gotchas
 
 - Verification-before-fix rule: see `references/FIX-PASS.md`.
-- Stash isolation is per-finding: `git stash -u` before applying a solution,
-  `git stash pop` on verification failure, `git stash drop` only after
-  verification succeeds. Never batch stashes across findings.
+- Diff isolation is per-finding. Preserve successful fixes and revert only
+  the failed finding's own diff.
 - `/varde-review` creates the review folder and category files this skill
   consumes; `/varde-build` decomposes and executes a companion plan after this
   skill creates it — invoke it directly unless the companion plan's acceptance

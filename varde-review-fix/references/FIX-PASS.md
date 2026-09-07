@@ -25,7 +25,7 @@ For each finding:
    solution. If it trips, do not apply — relabel the finding `triage` if it
    was `auto-fix`, leave `Disposition: blank`, record the reason, and move on
    to the next finding.
-5. Run `git stash -u` before applying the selected solution.
+5. Record the current diff before applying the selected solution. Do not stash prior successful fixes.
 6. Apply only the selected solution.
 7. Run the type checker and tests scoped to the finding's own `location`
    package/file (e.g. `npx tsc --noEmit -p <package>` or `npm test --
@@ -38,9 +38,9 @@ For each finding:
    has an optional `#### Verification` subsection with `assert:` lines, run
    every assertion and require all to pass. If the subsection is absent, skip
    this check.
-9. On verification failure, run `git stash pop` and leave the disposition
+9. On verification failure, restore only this finding's diff and leave the disposition
    blank.
-10. On success, run `git stash drop`, set `Disposition: fix`, and record the
+10. On success, set `Disposition: fix`, and record the
     verification result.
 
 Never mark a finding fixed before verification passes. Process later findings
